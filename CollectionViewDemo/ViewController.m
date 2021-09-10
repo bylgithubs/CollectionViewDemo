@@ -7,32 +7,46 @@
 //
 
 #import "ViewController.h"
+#import "WaterFlowLayout.h"
+
+typedef NS_ENUM(NSUInteger, CollectionViewLayoutType) {
+    CollectionViewLayoutTypeFlowLayout,
+    CollectionViewLayoutTypeWaterFlowLayout,
+};
 
 @interface ViewController ()<UICollectionViewDelegate,UICollectionViewDataSource>
 
-@property(nonatomic,strong) UICollectionView *collect;
+@property (nonatomic, strong) UICollectionView *collectionView;
+@property (nonatomic, assign) CollectionViewLayoutType type;
 
 @end
 
 @implementation ViewController
-@synthesize collect;
+//@synthesize collectionView;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
+    self.type = CollectionViewLayoutTypeFlowLayout;
+    UICollectionViewFlowLayout *layout;
+    if (self.type == CollectionViewLayoutTypeWaterFlowLayout) {
+        layout = [[WaterFlowLayout alloc] init];
+    } else {
+        layout = [[UICollectionViewFlowLayout alloc] init];
+    }
+    
     layout.scrollDirection = UICollectionViewScrollDirectionVertical;
     layout.itemSize = CGSizeMake(100, 100);
-    collect = [[UICollectionView alloc] initWithFrame:self.view.frame collectionViewLayout:layout];
-    collect.delegate = self;
-    collect.dataSource = self;
+    self.collectionView = [[UICollectionView alloc] initWithFrame:self.view.frame collectionViewLayout:layout];
+    self.collectionView.delegate = self;
+    self.collectionView.dataSource = self;
 //    [collect registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:@"collectionCell"];
-    [collect registerClass:[TestCollectionViewCell class] forCellWithReuseIdentifier:@"collectionCell"];
-    [self.view addSubview:collect];
+    [self.collectionView registerClass:[TestCollectionViewCell class] forCellWithReuseIdentifier:@"collectionCell"];
+    [self.view addSubview:self.collectionView];
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
-    return 20;
+    return 100;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
